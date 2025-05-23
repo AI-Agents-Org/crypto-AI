@@ -6,11 +6,14 @@ export const calculateRSI = createTool({
     id: "calculateRSI",
     description: "Calcula o RSI para uma série de preços",
     inputSchema: z.object({
-        closes: z.array(z.number()),
-        period: z.number().default(14),
+        closesRSI: z.array(z.number()),
+        periodRSI: z.number().default(14),
+    }),
+    outputSchema: z.object({
+        rsi: z.array(z.number()),
     }),
     execute: async ({ context }) => {
-        const rsiValues = RSI.calculate({ values: context.closes, period: context.period });
-        return rsiValues;
+        const rsi = RSI.calculate({ values: context.closesRSI, period: context.periodRSI });
+        return { rsi };
     },
 });

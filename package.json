@@ -21,11 +21,12 @@
   "homepage": "https://github.com/AI-Agents-Org/crypto-AI#readme",
   "devDependencies": {
     "@types/node": "^22.15.19",
-    "mastra": "^0.6.3",
+    "mastra": "^0.10.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@ai-sdk/google": "^1.2.18",
     "@ai-sdk/groq": "^1.2.9",
     "@mastra/core": "^0.10.0",
     "@mastra/fastembed": "^0.10.0",

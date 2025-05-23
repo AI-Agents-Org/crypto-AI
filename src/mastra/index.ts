@@ -1,10 +1,10 @@
 import { Mastra } from "@mastra/core";
-import { createLogger } from "@mastra/core/logger";
+import { ConsoleLogger } from "@mastra/core/logger";
 import { cryptoAgent } from "./agents/crypto-agent";
 import { LibSQLStore } from "@mastra/libsql";
-import { getEMAWorkflow } from "./workflow";
+import { getMarketAnalysisWorkflow } from "./workflow";
 export const mastra = new Mastra({
-    logger: createLogger({
+    logger: new ConsoleLogger({
         name: "MastraApp",
         level: "info",
     }),
@@ -12,6 +12,9 @@ export const mastra = new Mastra({
         cryptoAgent
     },
     workflows: {
-        getEMAWorkflow
+        getMarketAnalysisWorkflow
     },
+    storage: new LibSQLStore({
+        url: "file:../mastra.db",
+    }),
 })

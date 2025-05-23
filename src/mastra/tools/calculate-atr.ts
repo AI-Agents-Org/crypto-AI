@@ -11,12 +11,16 @@ export const calculateATR = createTool({
         closes: z.array(z.number()),
         period: z.number().default(14),
     }),
+    outputSchema: z.object({
+        atr: z.array(z.number()),
+    }),
     execute: async ({ context }) => {
-        return ATR.calculate({
+        const atr = ATR.calculate({
             high: context.highs,
             low: context.lows,
             close: context.closes,
             period: context.period,
         });
+        return { atr };
     },
 });

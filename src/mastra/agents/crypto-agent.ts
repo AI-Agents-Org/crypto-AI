@@ -1,12 +1,14 @@
 import { Agent } from "@mastra/core/agent";
 import { groq } from "@ai-sdk/groq";
+import { google } from "@ai-sdk/google";
 import { fetchMarketData } from "../tools/fetch-market-data";
 import { calculateRSI } from "../tools/calculate-rsi";
 import { Memory } from "@mastra/memory";
 import { LibSQLStore, LibSQLVector } from "@mastra/libsql";
 import { fastembed } from "@mastra/fastembed";
 import { calculateATR } from "../tools/calculate-atr";
-import { calculateEMA } from "../tools/calculate-ema";
+import { calculateEMA21 } from "../tools/calculate-ema21";
+import { calculateEMA50 } from "../tools/calculate-ema50";
 import { detectPivots } from "../tools/detect-pivot-points";
 import { generateSignal } from "../tools/generate-signal";
 import { sendTelegram } from "../tools/notification-sender";
@@ -37,11 +39,13 @@ export const cryptoAgent = new Agent({
     Considere o RSI e a tendência de preço nas últimas horas.
     O formato aceito de moeda é -nome da moeda-/USDT. Sempre que um usuário falar de uma moeda, use esse formato.
   `,
-    model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
+    model: google("gemini-2.0-flash-thinking-exp-01-21"),
+    // model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
     tools: {
         fetchMarketData,
         calculateRSI,
-        calculateEMA,
+        calculateEMA21,
+        calculateEMA50,
         calculateATR,
         detectPivots,
         generateSignal,

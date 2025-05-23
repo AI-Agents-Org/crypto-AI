@@ -23,7 +23,7 @@ export const fetchMarketData = createTool({
     execute: async ({ context }) => {
         const exchange = new ccxt.bybit({
             enableRateLimit: true,
-            options: { defaultType: 'future' },
+            options: { defaultType: 'perpetual' },
             apiKey: process.env.BYBIT_API_KEY,
             secret: process.env.BYBIT_API_SECRET,
         });
