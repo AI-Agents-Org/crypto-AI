@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const sendTelegram = createTool({
     id: "sendTelegram",
-    description: "Envia mensagem para um chat do Telegram",
+    description: "Envia mensagem para o chat do Telegram",
     inputSchema: z.object({
         text: z.string(),
     }),

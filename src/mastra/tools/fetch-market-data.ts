@@ -10,16 +10,18 @@ export const fetchMarketData = createTool({
         timeframe: z.string().default("1h"),
         limit: z.number().default(100),
     }),
-    outputSchema: z.array(
-        z.object({
-            timestamp: z.number(),
-            open: z.number(),
-            high: z.number(),
-            low: z.number(),
-            close: z.number(),
-            volume: z.number(),
-        })
-    ),
+    outputSchema: z.object({
+        ohlcvFormatted: z.array(
+            z.object({
+                timestamp: z.number(),
+                open: z.number(),
+                high: z.number(),
+                low: z.number(),
+                close: z.number(),
+                volume: z.number(),
+            })
+        )
+    }),
     execute: async ({ context }) => {
         const exchange = new ccxt.bybit({
             enableRateLimit: true,
@@ -29,7 +31,7 @@ export const fetchMarketData = createTool({
         });
 
         const ohlcv = await exchange.fetchOHLCV(context.symbol, context.timeframe, undefined, context.limit);
-        return ohlcv.map((candle) => ({
+        const ohlcvFormatted = ohlcv.map((candle) => ({
             timestamp: Number(candle[0]),
             open: Number(candle[1]),
             high: Number(candle[2]),
@@ -37,5 +39,6 @@ export const fetchMarketData = createTool({
             close: Number(candle[4]),
             volume: Number(candle[5]),
         }));
+        return { ohlcvFormatted };
     },
 });

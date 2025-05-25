@@ -9,8 +9,7 @@ import { fastembed } from "@mastra/fastembed";
 import { calculateATR } from "../tools/calculate-atr";
 import { calculateEMA21 } from "../tools/calculate-ema21";
 import { calculateEMA50 } from "../tools/calculate-ema50";
-import { detectPivots } from "../tools/detect-pivot-points";
-import { generateSignal } from "../tools/generate-signal";
+import { detectPivotsEnhanced } from "../tools/detect-pivot-points";
 import { sendTelegram } from "../tools/notification-sender";
 
 const memory = new Memory({
@@ -22,7 +21,7 @@ const memory = new Memory({
     }),
     embedder: fastembed,
     options: {
-        lastMessages: 40,
+        lastMessages: 10,
         semanticRecall: {
             topK: 2,
             messageRange: { before: 2, after: 2 }
@@ -34,21 +33,14 @@ const memory = new Memory({
 export const cryptoAgent = new Agent({
     name: "Crypto Analyst",
     instructions: `
-    Você é um analista de criptomoedas. 
-    Utilize os dados de mercado e indicadores técnicos para identificar oportunidades de entrada. 
-    Considere o RSI e a tendência de preço nas últimas horas.
-    O formato aceito de moeda é -nome da moeda-/USDT. Sempre que um usuário falar de uma moeda, use esse formato.
+    Você é um analista experiente e especializado no mercado de perpetuals. 
+
+    Você consegue utilizar a tool sendTelegram para enviar mensagens ao usuário sempre que for solicitado.
+
   `,
-    model: google("gemini-2.0-flash-thinking-exp-01-21"),
-    // model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
+    model: google("gemini-2.0-flash-001"),
+    // model: groq("deepseek-r1-distill-qwen-32b"),
     tools: {
-        fetchMarketData,
-        calculateRSI,
-        calculateEMA21,
-        calculateEMA50,
-        calculateATR,
-        detectPivots,
-        generateSignal,
         sendTelegram,
     },
     memory: memory
