@@ -1,16 +1,9 @@
 import { Agent } from "@mastra/core/agent";
-import { groq } from "@ai-sdk/groq";
 import { google } from "@ai-sdk/google";
-import { fetchMarketData } from "../tools/fetch-market-data";
-import { calculateRSI } from "../tools/calculate-rsi";
 import { Memory } from "@mastra/memory";
 import { LibSQLStore, LibSQLVector } from "@mastra/libsql";
 import { fastembed } from "@mastra/fastembed";
-import { calculateATR } from "../tools/calculate-atr";
-import { calculateEMA21 } from "../tools/calculate-ema21";
-import { calculateEMA50 } from "../tools/calculate-ema50";
-import { detectPivotsEnhanced } from "../tools/detect-pivot-points";
-import { sendTelegram } from "../tools/notification-sender";
+
 
 const memory = new Memory({
     storage: new LibSQLStore({
@@ -33,15 +26,11 @@ const memory = new Memory({
 export const cryptoAgent = new Agent({
     name: "Crypto Analyst",
     instructions: `
-    Você é um analista experiente e especializado no mercado de perpetuals. 
-
-    Você consegue utilizar a tool sendTelegram para enviar mensagens ao usuário sempre que for solicitado.
-
+    Você é um analista experiente e especializado no mercado de perpetuals.
+    Sua capacidade de analisar os dados históricos e atuais do mercado de perpetuals é essencial para fornecer recomendações de negociação precisas.
+    Acompanhar padrões de preço, volumes e outros indicadores técnicos disponibilizados é fundamental para identificar oportunidades de negociação.
   `,
-    model: google("gemini-2.0-flash-001"),
+    model: google("gemini-2.0-flash-thinking-exp-01-21"),
     // model: groq("deepseek-r1-distill-qwen-32b"),
-    tools: {
-        sendTelegram,
-    },
     memory: memory
 });

@@ -6,7 +6,7 @@ dotenv.config();
 // Configuração da exchange (Bybit, futuros)
 const exchange = new ccxt.bybit({
     enableRateLimit: true,
-    options: { defaultType: 'future' },
+    options: { defaultType: 'perpetual' },
     apiKey: process.env.BYBIT_API_KEY,
     secret: process.env.BYBIT_API_SECRET,
 });
@@ -46,42 +46,52 @@ function calcPctChange(ohlcv: (number | undefined)[][]): number | null {
     return ((lastClose - firstClose) / firstClose) * 100;
 }
 
-async function main() {
-    const startAll = Date.now();
+export async function getTopFutures(): Promise<string[]> {
     console.log(`[${new Date().toISOString()}] Buscando mercados de futuros USDT na Bybit...`);
     const pairs = await fetchUsdtFuturesPairs();
     console.log(`Total de pares encontrados: ${pairs.length}`);
 
-    const startFetch = Date.now();
     const results: { symbol: string; pct: number }[] = [];
 
     for (const symbol of pairs) {
-        const ohlcv = await fetchOhlcv(symbol, '1h', 100);
+        const ohlcv = await fetchOhlcv(symbol, '1h', 24);
         const pct = calcPctChange(ohlcv);
         if (pct !== null && isFinite(pct)) {
             results.push({ symbol, pct });
         }
     }
-    const endFetch = Date.now();
 
     // Ordena por variação percentual decrescente
     results.sort((a, b) => b.pct - a.pct);
     const top10 = results.slice(0, 10);
 
-    console.table(
-        top10.map((item, idx) => ({
-            Rank: idx + 1,
-            Par: item.symbol,
-            'Variação (%)': item.pct.toFixed(2),
-        }))
-    );
+    const top10negativo = results.slice(-10).sort((a, b) => b.pct - a.pct);
+    // console.table(
+    //     top10.map((item, idx) => ({
+    //         Rank: idx + 1,
+    //         Par: item.symbol,
+    //         'Variação (%)': item.pct.toFixed(2),
+    //     }))
+    // );
+    // console.table(
+    //     top10negativo.map((item, idx) => ({
+    //         Rank: idx + 1,
+    //         Par: item.symbol,
+    //         'Variação (%)': item.pct.toFixed(2),
+    //     }))
+    // );
 
-    const endAll = Date.now();
-    console.log(`Tempo total de execução: ${((endAll - startAll) / 1000).toFixed(2)}s`);
-    console.log(`Tempo para buscar/processar mercados: ${((endFetch - startFetch) / 1000).toFixed(2)}s`);
+    const symbols = [...top10.map((item) => item.symbol), ...top10negativo.map((item) => item.symbol)];
+
+    return symbols;
 }
 
-main().catch((err) => {
-    console.error('Erro:', err);
-    process.exit(1);
-});
+// (async () => {
+//     try {
+//         const topFutures = await getTopFutures();
+//         console.log('Top 10 futures:', topFutures);
+//     } catch (err) {
+//         console.error('Erro:', err);
+//         process.exit(1);
+//     }
+// })();
