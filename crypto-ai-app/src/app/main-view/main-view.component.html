@@ -1,0 +1,39 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="!((isHandset$ | async) === true)"
+        class="sidenav">
+        <mat-toolbar class="sidenav-toolbar">
+            <span>Menu</span>
+        </mat-toolbar>
+        <mat-nav-list>
+            <a mat-list-item routerLink="/chat" routerLinkActive="active-link" (click)="closeSidenavIfHandset()">
+                <mat-icon matListItemIcon>chat</mat-icon>
+                <span matListItemTitle>Chat</span>
+            </a>
+            <a mat-list-item routerLink="/workflow" routerLinkActive="active-link" (click)="closeSidenavIfHandset()">
+                <mat-icon matListItemIcon>hub</mat-icon>
+                <span matListItemTitle>Workflow</span>
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <mat-toolbar color="primary" class="main-toolbar">
+            <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="sidenav.toggle()"
+                *ngIf="(isHandset$ | async)">
+                <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+            </button>
+            <span>Crypto AI Interface</span>
+            <span class="toolbar-spacer"></span>
+            <div class="theme-toggle-container">
+                <button mat-icon-button (click)="toggleTheme()"
+                    [attr.aria-label]="isDarkMode() ? 'Activate light mode' : 'Activate dark mode'"
+                    [title]="isDarkMode() ? 'Light mode' : 'Dark mode'">
+                    <mat-icon>{{ isDarkMode() ? 'brightness_7' : 'brightness_4' }}</mat-icon>
+                </button>
+            </div>
+        </mat-toolbar>
+        <div class="content-area">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,229 @@
+/* Global Styles */
+
+// Import a single prebuilt Angular Material theme for base component styling
+// This is less prone to SASS compilation issues if custom theming is problematic.
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+// Define CSS Custom Properties (Variables) for theming
+:root {
+    // Light Theme (Default)
+    --body-bg-color: #ffffff;
+    --body-text-color: #000000;
+    --card-bg-color: #f9f9f9;
+    --card-title-color: #000000;
+    --primary-action-color: #3f51b5; // Example from indigo-pink
+    --primary-action-text-color: #ffffff;
+
+    // Specific for your request
+    --light-theme-main-bg: #ffffff;
+    --light-theme-main-text: #000000;
+    --light-theme-card-bg: #eeeeee;
+    --light-theme-card-text: #000000;
+    --light-theme-accent-green: #4CAF50; // A standard green for light theme if needed
+
+    --dark-theme-main-bg: #121212;
+    --dark-theme-main-text: #e0e0e0;
+    --dark-theme-card-bg: #1e1e1e;
+    --dark-theme-card-text: #e0e0e0;
+    --dark-theme-accent-green: #66bb6a; // A vibrant green for dark theme
+}
+
+body {
+    background-color: var(--light-theme-main-bg);
+    color: var(--light-theme-main-text);
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    margin: 0;
+    height: 100%;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Styles for Dark Theme
+body.dark-theme {
+    background-color: var(--dark-theme-main-bg);
+    color: var(--dark-theme-main-text);
+
+    .mat-toolbar.mat-primary {
+        background-color: var(--dark-theme-card-bg); // Use card bg or a specific toolbar dark bg
+        color: var(--dark-theme-main-text);
+    }
+
+    .mat-toolbar.mat-primary button[mat-icon-button],
+    .mat-toolbar.mat-primary a[mat-button],
+    .mat-toolbar.mat-primary .mat-icon {
+        color: var(--dark-theme-main-text); // Ensure toolbar buttons/icons are also dark-theme text color
+    }
+
+    .mat-sidenav {
+        background-color: var(--dark-theme-card-bg); // Sidenav background
+        color: var(--dark-theme-main-text); // Sidenav text color
+    }
+
+    .mat-sidenav .mat-toolbar {
+        background-color: var(--dark-theme-card-bg);
+        color: var(--dark-theme-main-text);
+    }
+
+    .mat-sidenav .mat-nav-list a[mat-list-item] {
+        color: var(--dark-theme-main-text);
+    }
+
+    .mat-sidenav .mat-nav-list a[mat-list-item] .mat-icon {
+        color: var(--dark-theme-main-text);
+    }
+
+    .mat-sidenav .mat-nav-list a[mat-list-item].active-link {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--dark-theme-accent-green); // Active link in dark mode
+    }
+
+    .mat-sidenav .mat-nav-list a[mat-list-item].active-link .mat-icon {
+        color: var(--dark-theme-accent-green);
+    }
+
+    .mat-mdc-card {
+        background-color: var(--dark-theme-card-bg) !important;
+        color: var(--dark-theme-card-text) !important;
+    }
+
+    .mat-mdc-card-title {
+        color: var(--dark-theme-card-text) !important;
+    }
+
+    .mat-mdc-slide-toggle.mat-accent .mdc-switch__track::after {
+        background-color: var(--dark-theme-accent-green) !important;
+    }
+
+    .mat-mdc-slide-toggle.mat-accent .mdc-switch__handle {
+        background-color: var(--dark-theme-accent-green) !important;
+    }
+
+    .chat-input input[type="text"],
+    .message-input input[type="text"] {
+        background-color: #2c2c2c;
+        color: var(--dark-theme-main-text);
+        border-color: #444;
+    }
+
+    .chat-input button,
+    .message-input button {
+        background-color: var(--dark-theme-accent-green);
+        color: #000000;
+    }
+
+    .workflow-form-container button[mat-raised-button][color="primary"] {
+        background-color: var(--dark-theme-accent-green);
+        color: #000000;
+    }
+
+    // Styles for WorkflowFormComponent in Dark Mode
+    .workflow-form-container {
+        // Se o .content-area já tem um padding e cor de fundo, 
+        // talvez não precise de um background aqui, a menos que queira um contraste.
+        // background-color: var(--dark-theme-card-bg); // Opcional, se quiser um fundo de card
+        // padding: 16px; // Opcional, se .content-area não for suficiente
+    }
+
+    .workflow-form-container p {
+        color: var(--dark-theme-main-text);
+    }
+
+    // MatFormField theming for dark mode
+    .workflow-form-container .mat-mdc-form-field .mdc-text-field {
+        background-color: rgba(255, 255, 255, 0.05); // Um fundo levemente translúcido para o campo
+    }
+
+    .workflow-form-container .mat-mdc-form-field .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .workflow-form-container .mat-mdc-form-field .mdc-text-field .mdc-text-field__input {
+        color: var(--dark-theme-main-text);
+    }
+
+    .workflow-form-container .mat-mdc-form-field .mdc-floating-label {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .workflow-form-container .mat-mdc-form-field .mdc-line-ripple::before,
+    .workflow-form-container .mat-mdc-form-field .mdc-line-ripple::after {
+        border-bottom-color: rgba(255, 255, 255, 0.7); // Cor da linha do form field
+    }
+
+    // Focused state for form field line
+    .workflow-form-container .mat-mdc-form-field.mat-focused .mdc-line-ripple::after {
+        border-bottom-color: var(--dark-theme-accent-green); // Cor do foco
+    }
+
+    // Focused state for label
+    .workflow-form-container .mat-mdc-form-field.mat-focused .mdc-floating-label {
+        color: var(--dark-theme-accent-green);
+    }
+
+    // Placeholder text color
+    .workflow-form-container .mat-mdc-form-field input::placeholder,
+    .workflow-form-container .mat-mdc-form-field textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    // Ensure .content-area in MainViewComponent also gets dark background
+    .content-area {
+        background-color: var(--dark-theme-main-bg);
+        // color: var(--dark-theme-main-text); // Opcional, se o texto dentro não herdar corretamente
+    }
+}
+
+// General card styling (Light mode default)
+.mat-mdc-card {
+    background-color: var(--light-theme-card-bg);
+    color: var(--light-theme-card-text);
+}
+
+.mat-mdc-card-title {
+    color: var(--light-theme-card-text);
+}
+
+// General Sidenav styling (Light mode default)
+.mat-sidenav {
+    background-color: var(--light-theme-card-bg); // Sidenav background for light
+    color: var(--light-theme-main-text); // Sidenav text for light
+}
+
+.mat-sidenav .mat-toolbar {
+    background-color: var(--light-theme-card-bg);
+    color: var(--light-theme-main-text);
+}
+
+.mat-sidenav .mat-nav-list a[mat-list-item].active-link {
+    background-color: rgba(0, 0, 0, 0.08);
+    color: var(--primary-action-color); // Cor do link ativo no tema claro
+}
+
+.mat-sidenav .mat-nav-list a[mat-list-item].active-link .mat-icon {
+    color: var(--primary-action-color);
+}
+
+// Ensure html also takes full height
+html {
+    height: 100%;
+}
+
+// Style for the chat component input/button in light mode (using variables for consistency)
+.chat-input input[type="text"],
+.message-input input[type="text"] {
+    background-color: var(--light-theme-card-bg); // or a specific input bg for light mode
+    color: var(--light-theme-main-text);
+    border: 1px solid #ccc;
+}
+
+.chat-input button,
+.message-input button {
+    background-color: var(--light-theme-accent-green); // Green for send button in light mode too
+    color: white;
+}
+
+// Style for the workflow form button in light mode
+.workflow-form-container button[mat-raised-button][color="primary"] {
+    // Let it use the default Material primary color for light theme, or override if needed
+    // background-color: var(--light-theme-accent-green);
+    // color: white;
+}

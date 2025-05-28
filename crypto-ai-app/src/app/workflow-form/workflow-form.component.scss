@@ -1,0 +1,11 @@
+.workflow-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* Space between form fields */
+}
+
+mat-form-field {
+    width: 100%;
+    /* Make form fields take full width */
+}

@@ -52,12 +52,16 @@ export async function getTopFutures(): Promise<string[]> {
     console.log(`Total de pares encontrados: ${pairs.length}`);
 
     const results: { symbol: string; pct: number }[] = [];
-
+    let totalPairs = 0;
     for (const symbol of pairs) {
         const ohlcv = await fetchOhlcv(symbol, '1h', 24);
         const pct = calcPctChange(ohlcv);
         if (pct !== null && isFinite(pct)) {
             results.push({ symbol, pct });
+        }
+        totalPairs++;
+        if (totalPairs === 20) {
+            break;
         }
     }
 

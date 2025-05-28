@@ -1,0 +1,59 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* Or a fixed height, e.g., 400px */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.messages-display {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    border-bottom: 1px solid #eee;
+}
+
+.message-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #eee;
+    /* Optional: if messages-display has no bottom border */
+}
+
+.message-input input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 8px;
+}
+
+.message-input button {
+    padding: 8px 12px;
+    background-color: var(--primary-color, #007bff);
+    /* Using a CSS variable for theming */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.message-input button:hover {
+    background-color: var(--primary-dark-color, #0056b3);
+}
+
+/* Example message styling (add more as needed) */
+.message {
+    padding: 5px 0;
+}
+
+.user-message {
+    text-align: right;
+    color: blue;
+}
+
+.agent-message {
+    text-align: left;
+    color: green;
+}

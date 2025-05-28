@@ -1,0 +1,103 @@
+.sidenav-container {
+    height: 100vh;
+    /* Full viewport height */
+}
+
+.sidenav {
+    width: 230px;
+    /* Adjust width as needed */
+    // background-color: var(--light-theme-card-bg); // Use a variable for sidenav background
+
+    .mat-toolbar {
+        // background: inherit; // Sidenav toolbar can inherit sidenav background
+        // color: var(--light-theme-main-text);
+    }
+
+    .mat-mdc-list-item .mdc-list-item__primary-text {
+        // color: var(--light-theme-main-text);
+    }
+
+    .mat-mdc-list-item mat-icon {
+        // color: var(--light-theme-main-text);
+    }
+
+    a.active-link {
+
+        // background-color: rgba(0,0,0,0.05); // Subtle background for active link
+        // color: var(--primary-action-color); // Use theme's primary color for active link text/icon
+        .mat-mdc-list-item .mdc-list-item__primary-text,
+        mat-icon {
+            // color: var(--primary-action-color);
+        }
+    }
+}
+
+// Dark theme overrides for sidenav
+body.dark-theme .sidenav {
+
+    // background-color: var(--dark-theme-card-bg);
+    .mat-toolbar {
+        // background: var(--dark-theme-card-bg);
+        // color: var(--dark-theme-main-text);
+    }
+
+    .mat-mdc-list-item .mdc-list-item__primary-text {
+        // color: var(--dark-theme-main-text);
+    }
+
+    .mat-mdc-list-item mat-icon {
+        // color: var(--dark-theme-main-text);
+    }
+
+    a.active-link {
+
+        // background-color: rgba(255,255,255,0.08);
+        // color: var(--dark-theme-accent-green);
+        .mat-mdc-list-item .mdc-list-item__primary-text,
+        mat-icon {
+            // color: var(--dark-theme-accent-green);
+        }
+    }
+}
+
+.main-toolbar {
+    display: flex;
+    // justify-content: space-between; // Removed as spacer handles right alignment
+    align-items: center;
+    position: sticky; // Make toolbar sticky
+    top: 0;
+    z-index: 100; // Ensure it's above other content
+}
+
+.nav-buttons a {
+    // No longer used, can be removed if not referenced elsewhere
+}
+
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+.theme-toggle-container button mat-icon {
+    // color: var(--body-text-color); // Uses body text color by default now
+}
+
+// body.dark-theme .theme-toggle-container button mat-icon {
+//   color: var(--dark-theme-main-text);
+// }
+
+.content-area {
+    padding: 16px;
+    height: calc(100vh - 64px); // Adjust if toolbar height is different
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+// Ensure the sidenav content also takes full height if needed
+mat-sidenav-content {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+// Remove old card layout styles if they were specific to main-view
+// .main-container, .chat-card, .workflow-card related styles can be removed if not used elsewhere.
