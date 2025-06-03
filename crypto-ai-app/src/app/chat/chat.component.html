@@ -1,10 +1,33 @@
 <!-- Basic chat interface will go here -->
 <div class="chat-container">
-    <div class="messages-display">
-        <!-- Messages will be displayed here -->
+    <div class="messages-container">
+        <div *ngFor="let message of messages"
+            [ngClass]="{'message': true, 'user-message': message.role === 'user', 'assistant-message': message.role === 'assistant'}">
+            <div class="message-content">
+                <ng-container *ngIf="message.role === 'assistant'; else userText">
+                    <div [innerHTML]="message.html"></div>
+                </ng-container>
+                <ng-template #userText>
+                    {{ message.content }}
+                </ng-template>
+            </div>
+            <div class="message-timestamp">
+                {{ message.timestamp | date:'short' }}
+            </div>
+        </div>
+        <div *ngIf="isLoading" class="loading-indicator">
+            <mat-spinner diameter="24"></mat-spinner>
+        </div>
     </div>
-    <div class="message-input">
-        <input type="text" placeholder="Type your message...">
-        <button>Send</button>
+
+    <div class="input-container">
+        <mat-form-field appearance="outline" class="message-input">
+            <input matInput [(ngModel)]="currentMessage" placeholder="Digite sua mensagem..."
+                (keyup.enter)="sendMessage()" [disabled]="isLoading">
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="sendMessage()"
+            [disabled]="!currentMessage.trim() || isLoading">
+            <mat-icon>send</mat-icon>
+        </button>
     </div>
 </div>

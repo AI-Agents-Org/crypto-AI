@@ -2,58 +2,145 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    /* Or a fixed height, e.g., 400px */
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.messages-display {
-    flex-grow: 1;
-    padding: 10px;
+.messages-container {
+    flex: 1;
     overflow-y: auto;
-    border-bottom: 1px solid #eee;
-}
-
-.message-input {
+    padding: 20px;
     display: flex;
-    padding: 10px;
-    border-top: 1px solid #eee;
-    /* Optional: if messages-display has no bottom border */
+    flex-direction: column;
+    gap: 16px;
 }
 
-.message-input input {
-    flex-grow: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-right: 8px;
-}
-
-.message-input button {
-    padding: 8px 12px;
-    background-color: var(--primary-color, #007bff);
-    /* Using a CSS variable for theming */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.message-input button:hover {
-    background-color: var(--primary-dark-color, #0056b3);
-}
-
-/* Example message styling (add more as needed) */
 .message {
-    padding: 5px 0;
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    position: relative;
+
+    .message-content {
+        margin-bottom: 4px;
+        white-space: pre-wrap;
+    }
+
+    .message-timestamp {
+        font-size: 0.75rem;
+        color: rgba(0, 0, 0, 0.6);
+    }
 }
 
 .user-message {
-    text-align: right;
-    color: blue;
+    align-self: flex-end;
+    background-color: #1976d2;
+    color: white;
+
+    .message-timestamp {
+        color: rgba(255, 255, 255, 0.8);
+    }
 }
 
-.agent-message {
-    text-align: left;
-    color: green;
+.assistant-message {
+    align-self: flex-start;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.loading-indicator {
+    align-self: center;
+    margin: 16px 0;
+}
+
+.input-container {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background-color: white;
+    border-top: 1px solid #e0e0e0;
+
+    .message-input {
+        flex: 1;
+    }
+
+    button {
+        min-width: 48px;
+        padding: 0;
+    }
+}
+
+// Scrollbar styling
+.messages-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+// Dark Theme Styles
+:host-context(body.dark-theme) {
+    .chat-container {
+        background-color: var(--dark-theme-secondary-bg);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .messages-container {
+        background-color: var(--dark-theme-main-bg);
+
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--dark-theme-border-color);
+        }
+    }
+
+    .user-message {
+        background-color: var(--dark-theme-accent-green);
+        color: var(--dark-theme-accent-green-text);
+    }
+
+    .assistant-message {
+        background-color: var(--dark-theme-card-bg);
+        color: var(--dark-theme-main-text);
+        border-color: var(--dark-theme-border-color);
+    }
+
+    .input-container {
+        background-color: var(--dark-theme-secondary-bg);
+        border-top-color: var(--dark-theme-border-color);
+    }
+
+    .message-input {
+        background-color: var(--dark-theme-card-bg);
+        color: var(--dark-theme-main-text);
+        border-color: var(--dark-theme-border-color);
+
+        &:focus {
+            border-color: var(--dark-theme-accent-green);
+            box-shadow: 0 0 0 3px rgba(var(--dark-theme-accent-green-rgb), 0.1);
+        }
+
+        &::placeholder {
+            color: var(--dark-theme-secondary-text);
+        }
+    }
+
+    .message-input button {
+        background-color: var(--dark-theme-accent-green);
+        color: var(--dark-theme-accent-green-text);
+
+        &:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    }
 }

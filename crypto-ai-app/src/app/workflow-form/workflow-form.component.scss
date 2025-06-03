@@ -1,11 +1,184 @@
 .workflow-form-container {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    /* Space between form fields */
+    gap: 24px;
+    padding: 32px;
+    background-color: var(--light-theme-card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.form-header {
+    margin-bottom: 8px;
+
+    h2 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--light-theme-main-text);
+        margin: 0;
+    }
+
+    p {
+        color: var(--light-theme-secondary-text);
+        margin: 8px 0 0;
+        font-size: 1rem;
+    }
 }
 
 mat-form-field {
     width: 100%;
-    /* Make form fields take full width */
+
+    ::ng-deep {
+        .mat-form-field-wrapper {
+            margin: 0;
+            padding-bottom: 0;
+        }
+
+        .mat-form-field-flex {
+            background-color: var(--light-theme-main-bg);
+            border-radius: 8px;
+            padding: 0 12px;
+            transition: all 0.2s ease;
+        }
+
+        .mat-form-field-underline {
+            display: none;
+        }
+
+        .mat-form-field-infix {
+            padding: 12px 0;
+        }
+
+        .mat-form-field-label {
+            color: var(--light-theme-secondary-text);
+        }
+
+        .mat-input-element {
+            color: var(--light-theme-main-text);
+            font-size: 1rem;
+        }
+
+        &.mat-focused {
+            .mat-form-field-flex {
+                box-shadow: 0 0 0 2px var(--primary-action-color);
+            }
+        }
+    }
+}
+
+.form-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+
+    button {
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+
+        &[type="submit"] {
+            background-color: var(--primary-action-color);
+            color: var(--primary-action-text-color);
+
+            &:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+        }
+
+        &[type="button"] {
+            background-color: transparent;
+            color: var(--light-theme-main-text);
+            border: 1px solid var(--light-theme-border-color);
+
+            &:hover {
+                background-color: var(--light-theme-hover-bg);
+            }
+        }
+    }
+}
+
+// Dark Theme Styles
+:host-context(body.dark-theme) {
+    .workflow-form-container {
+        background-color: var(--dark-theme-card-bg);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-header {
+        h2 {
+            color: var(--dark-theme-main-text);
+        }
+
+        p {
+            color: var(--dark-theme-secondary-text);
+        }
+    }
+
+    mat-form-field {
+        ::ng-deep {
+            .mat-form-field-flex {
+                background-color: var(--dark-theme-secondary-bg);
+            }
+
+            .mat-form-field-label {
+                color: var(--dark-theme-secondary-text);
+            }
+
+            .mat-input-element {
+                color: var(--dark-theme-main-text);
+            }
+
+            &.mat-focused {
+                .mat-form-field-flex {
+                    box-shadow: 0 0 0 2px var(--dark-theme-accent-green);
+                }
+            }
+        }
+    }
+
+    .form-actions {
+        button {
+            &[type="submit"] {
+                background-color: var(--dark-theme-accent-green);
+                color: var(--dark-theme-accent-green-text);
+
+                &:hover {
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            &[type="button"] {
+                color: var(--dark-theme-main-text);
+                border-color: var(--dark-theme-border-color);
+
+                &:hover {
+                    background-color: var(--dark-theme-hover-bg);
+                }
+            }
+        }
+    }
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+
+    mat-form-field {
+        width: 100%;
+    }
+
+    button {
+        align-self: flex-end;
+    }
 }

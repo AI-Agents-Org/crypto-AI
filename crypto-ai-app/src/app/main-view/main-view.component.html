@@ -1,17 +1,21 @@
 <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #sidenav [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="!((isHandset$ | async) === true)"
-        class="sidenav">
+        class="sidenav" [class.collapsed]="isCollapsed" (mouseenter)="isCollapsed = false"
+        (mouseleave)="isCollapsed = true">
         <mat-toolbar class="sidenav-toolbar">
-            <span>Menu</span>
+            <mat-icon>menu</mat-icon>
+            <!-- <span *ngIf="!isCollapsed">Menu</span> -->
         </mat-toolbar>
-        <mat-nav-list>
-            <a mat-list-item routerLink="/chat" routerLinkActive="active-link" (click)="closeSidenavIfHandset()">
+        <mat-nav-list class="sidenav-list">
+            <a mat-list-item routerLink="/chat" routerLinkActive="active-link" (click)="closeSidenavIfHandset()"
+                class="sidenav-list-item">
                 <mat-icon matListItemIcon>chat</mat-icon>
-                <span matListItemTitle>Chat</span>
+                <span matListItemTitle *ngIf="!isCollapsed">Chat</span>
             </a>
-            <a mat-list-item routerLink="/workflow" routerLinkActive="active-link" (click)="closeSidenavIfHandset()">
+            <a mat-list-item routerLink="/workflow" routerLinkActive="active-link" (click)="closeSidenavIfHandset()"
+                class="sidenav-list-item">
                 <mat-icon matListItemIcon>hub</mat-icon>
-                <span matListItemTitle>Workflow</span>
+                <span matListItemTitle *ngIf="!isCollapsed">Workflow</span>
             </a>
         </mat-nav-list>
     </mat-sidenav>
@@ -22,7 +26,8 @@
                 *ngIf="(isHandset$ | async)">
                 <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
             </button>
-            <span>Crypto AI Interface</span>
+            <mat-icon style="margin-right: 8px;">candlestick_chart</mat-icon>
+            <span>PerpetualsAI</span>
             <span class="toolbar-spacer"></span>
             <div class="theme-toggle-container">
                 <button mat-icon-button (click)="toggleTheme()"

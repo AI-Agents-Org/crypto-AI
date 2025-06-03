@@ -1,6 +1,7 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
 import ccxt from "ccxt";
+import { environment } from "../../../crypto-ai-app/src/environments/environment";
 
 export const fetchMarketData = createTool({
     id: "fetchMarketData",
@@ -26,8 +27,8 @@ export const fetchMarketData = createTool({
         const exchange = new ccxt.bybit({
             enableRateLimit: true,
             options: { defaultType: 'perpetual' },
-            apiKey: process.env.BYBIT_API_KEY,
-            secret: process.env.BYBIT_API_SECRET,
+            apiKey: environment.bybit.apiKey,
+            secret: environment.bybit.secret,
         });
 
         const ohlcv = await exchange.fetchOHLCV(context.symbol, context.timeframe, undefined, context.limit);

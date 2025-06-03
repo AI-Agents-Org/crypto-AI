@@ -35,6 +35,7 @@ export class MainViewComponent implements OnInit {
     @ViewChild('sidenav') sidenav!: MatSidenav;
 
     isHandset$!: Observable<boolean>;
+    isCollapsed = true; // Adicionado para controlar o colapso do menu
 
     constructor(
         private breakpointObserver: BreakpointObserver,

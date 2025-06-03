@@ -1,11 +1,12 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
 import axios from "axios";
+import { environment } from "../../../crypto-ai-app/src/environments/environment";
 
 async function sendTelegramMessage(message: string) {
     try {
-        const token = process.env.TELEGRAM_TOKEN!;
-        const chatId = process.env.CHAT_ID!;
+        const token = environment.telegram.token;
+        const chatId = environment.telegram.chatId;
         const maxLength = 4000;
 
         // Limpa e formata a mensagem

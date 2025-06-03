@@ -1,18 +1,16 @@
 <p>Workflow Form Component Works!</p>
 <form [formGroup]="workflowForm" (ngSubmit)="onSubmit()" class="workflow-form-container">
-    <!-- Example Form Field (add more as needed) -->
-    <!--
-  <mat-form-field appearance="outline">
-    <mat-label>Field 1</mat-label>
-    <input matInput formControlName="field1" placeholder="Enter value for Field 1">
+  <mat-form-field appearance="fill">
+    <mat-label>Symbol</mat-label>
+    <input matInput formControlName="symbol" placeholder="e.g. BTCUSDT">
   </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Field 2</mat-label>
-    <input matInput formControlName="field2" placeholder="Enter value for Field 2">
+  <mat-form-field appearance="fill">
+    <mat-label>Timeframe</mat-label>
+    <input matInput formControlName="timeframe" placeholder="e.g. 1h">
   </mat-form-field>
-  -->
-    <p><em>Form fields for the workflow will go here. Uncomment and adapt the examples above.</em></p>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="!workflowForm.valid">Invoke Workflow</button>
+  <button mat-raised-button color="primary" type="submit" [disabled]="!workflowForm.valid">
+    Analyze Market
+  </button>
 </form>

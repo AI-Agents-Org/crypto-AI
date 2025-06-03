@@ -6,7 +6,7 @@ import { calculateRSI } from "../tools/calculate-rsi";
 import { calculateATR } from "../tools/calculate-atr";
 import { detectPivotsEnhanced } from "../tools/detect-pivot-points";
 import { z } from 'zod'
-import { cryptoAgent } from '../agents/crypto-agent';
+import { workflowCryptoAgent } from "../agents/workflow-crypt-agent";
 import { sendTelegram } from "../tools/notification-sender";
 
 const fetchDataStep = createStep(fetchMarketData)
@@ -157,7 +157,7 @@ Com base nos dados fornecidos e na sua especialização em mercado de perpetuals
     Tente prever uma data/hora para o ponto de entrada com base nos dados históricos.
 
 `;
-        const agentResponse = await cryptoAgent.generate(analysisPrompt);
+        const agentResponse = await workflowCryptoAgent.generate(analysisPrompt);
         const analysisText = typeof agentResponse === 'string' ? agentResponse : (agentResponse?.text || "No analysis provided by agent.");
         const result: z.infer<typeof cryptoAgentAnalysisOutputSchema> = { message: analysisText }
         return result;

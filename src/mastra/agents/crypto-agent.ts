@@ -3,7 +3,7 @@ import { google } from "@ai-sdk/google";
 import { Memory } from "@mastra/memory";
 import { LibSQLStore, LibSQLVector } from "@mastra/libsql";
 import { fastembed } from "@mastra/fastembed";
-
+import { fetchMarketData } from "../tools/fetch-market-data";
 
 const memory = new Memory({
     storage: new LibSQLStore({
@@ -31,6 +31,6 @@ export const cryptoAgent = new Agent({
     Acompanhar padrões de preço, volumes e outros indicadores técnicos disponibilizados é fundamental para identificar oportunidades de negociação.
   `,
     model: google("gemini-2.0-flash-thinking-exp-01-21"),
-    // model: groq("deepseek-r1-distill-qwen-32b"),
+    tools: { fetchMarketData },
     memory: memory
 });

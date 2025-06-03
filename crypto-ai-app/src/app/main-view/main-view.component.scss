@@ -1,103 +1,207 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
 .sidenav-container {
-    height: 100vh;
-    /* Full viewport height */
+    height: 100%;
 }
 
+// --- Styles for Sidenav ---
 .sidenav {
-    width: 230px;
-    /* Adjust width as needed */
-    // background-color: var(--light-theme-card-bg); // Use a variable for sidenav background
+    width: 240px;
+    min-width: 64px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-x: hidden;
+    background-color: var(--light-theme-card-bg);
+    border-right: 1px solid var(--light-theme-border-color, #e0e0e0);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
 
-    .mat-toolbar {
-        // background: inherit; // Sidenav toolbar can inherit sidenav background
-        // color: var(--light-theme-main-text);
+    &.collapsed {
+        width: 64px;
+
+        .sidenav-toolbar span,
+        .mat-nav-list span {
+            display: none;
+        }
+
+        .sidenav-toolbar mat-icon,
+        .mat-nav-list mat-icon {
+            margin-right: 0;
+            display: flex;
+            justify-content: center;
+        }
     }
 
-    .mat-mdc-list-item .mdc-list-item__primary-text {
-        // color: var(--light-theme-main-text);
+    .sidenav-toolbar {
+        background-color: transparent;
+        color: var(--light-theme-main-text);
+        padding: 0 24px;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid var(--light-theme-border-color, #e0e0e0);
+
+        span {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
     }
 
-    .mat-mdc-list-item mat-icon {
-        // color: var(--light-theme-main-text);
-    }
+    .mat-nav-list {
+        padding: 16px 8px;
 
-    a.active-link {
+        a[mat-list-item] {
+            margin: 4px 0;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
 
-        // background-color: rgba(0,0,0,0.05); // Subtle background for active link
-        // color: var(--primary-action-color); // Use theme's primary color for active link text/icon
-        .mat-mdc-list-item .mdc-list-item__primary-text,
-        mat-icon {
-            // color: var(--primary-action-color);
+            &:hover {
+                background-color: var(--light-theme-hover-bg, rgba(0, 0, 0, 0.04));
+            }
+
+            &.active {
+                background-color: var(--primary-action-color);
+                color: var(--primary-action-text-color);
+            }
+
+            mat-icon {
+                margin-right: 16px;
+                font-size: 24px;
+            }
         }
     }
 }
 
-// Dark theme overrides for sidenav
-body.dark-theme .sidenav {
+@media (max-width: 600px) {
+    .sidenav {
+        position: absolute;
+        z-index: 1000;
+        left: -240px;
 
-    // background-color: var(--dark-theme-card-bg);
-    .mat-toolbar {
-        // background: var(--dark-theme-card-bg);
-        // color: var(--dark-theme-main-text);
-    }
-
-    .mat-mdc-list-item .mdc-list-item__primary-text {
-        // color: var(--dark-theme-main-text);
-    }
-
-    .mat-mdc-list-item mat-icon {
-        // color: var(--dark-theme-main-text);
-    }
-
-    a.active-link {
-
-        // background-color: rgba(255,255,255,0.08);
-        // color: var(--dark-theme-accent-green);
-        .mat-mdc-list-item .mdc-list-item__primary-text,
-        mat-icon {
-            // color: var(--dark-theme-accent-green);
+        &.open {
+            left: 0;
         }
     }
 }
 
+// --- Main Toolbar Styles ---
 .main-toolbar {
-    display: flex;
-    // justify-content: space-between; // Removed as spacer handles right alignment
-    align-items: center;
-    position: sticky; // Make toolbar sticky
-    top: 0;
-    z-index: 100; // Ensure it's above other content
-}
+    background-color: var(--light-theme-card-bg);
+    color: var(--light-theme-main-text);
+    padding: 0 24px;
+    height: 72px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 1;
 
-.nav-buttons a {
-    // No longer used, can be removed if not referenced elsewhere
+    >span:not(.toolbar-spacer) {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--light-theme-main-text);
+    }
+
+    button[mat-icon-button] {
+        margin-left: 8px;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background-color: var(--light-theme-hover-bg, rgba(0, 0, 0, 0.04));
+        }
+
+        mat-icon {
+            color: var(--light-theme-main-text);
+        }
+    }
 }
 
 .toolbar-spacer {
     flex: 1 1 auto;
 }
 
-.theme-toggle-container button mat-icon {
-    // color: var(--body-text-color); // Uses body text color by default now
+.theme-toggle-container {
+    button {
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: rotate(15deg);
+        }
+
+        mat-icon {
+            color: var(--light-theme-main-text);
+        }
+    }
 }
 
-// body.dark-theme .theme-toggle-container button mat-icon {
-//   color: var(--dark-theme-main-text);
-// }
-
+// --- Content Area Styles ---
 .content-area {
-    padding: 16px;
-    height: calc(100vh - 64px); // Adjust if toolbar height is different
+    padding: 32px;
+    height: calc(100vh - 72px);
     overflow-y: auto;
     box-sizing: border-box;
+    background-color: var(--light-theme-main-bg);
+    color: var(--light-theme-main-text);
+    transition: all 0.3s ease;
 }
 
-// Ensure the sidenav content also takes full height if needed
-mat-sidenav-content {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
+// --- Dark Theme Overrides ---
+:host-context(body.dark-theme) {
+    .sidenav {
+        background-color: var(--dark-theme-secondary-bg);
+        border-right: 1px solid var(--dark-theme-border-color);
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
 
-// Remove old card layout styles if they were specific to main-view
-// .main-container, .chat-card, .workflow-card related styles can be removed if not used elsewhere.
+        .sidenav-toolbar {
+            background-color: var(--dark-theme-secondary-bg);
+            border-bottom-color: var(--dark-theme-border-color);
+            color: var(--dark-theme-main-text);
+        }
+
+        .mat-nav-list {
+            a[mat-list-item] {
+                color: var(--dark-theme-main-text);
+
+                &:hover {
+                    background-color: var(--dark-theme-hover-bg, rgba(255, 255, 255, 0.05));
+                }
+
+                &.active {
+                    background-color: var(--dark-theme-accent-green);
+                    color: var(--dark-theme-accent-green-text);
+                }
+            }
+        }
+    }
+
+    .main-toolbar {
+        background-color: var(--dark-theme-card-bg);
+        color: var(--dark-theme-main-text);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+        >span:not(.toolbar-spacer) {
+            color: var(--dark-theme-main-text);
+        }
+
+        button[mat-icon-button] {
+            &:hover {
+                background-color: var(--light-theme-hover-bg, rgba(255, 255, 255, 0.05));
+            }
+
+            mat-icon {
+                color: var(--light-theme-hover-bg);
+            }
+        }
+    }
+
+    .theme-toggle-container button mat-icon {
+        color: var(--dark-theme-main-text);
+    }
+
+    .content-area {
+        background-color: var(--dark-theme-main-bg);
+        color: var(--dark-theme-main-text);
+    }
+}
