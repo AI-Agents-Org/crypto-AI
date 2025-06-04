@@ -95,67 +95,43 @@ const cryptoAgentAnalysisStep = createStep({
     outputSchema: cryptoAgentAnalysisOutputSchema,
     execute: async ({ inputData }): Promise<z.infer<typeof cryptoAgentAnalysisOutputSchema>> => {
         const analysisPrompt = `
-**Análise de Mercado e Potenciais Pontos de Entrada**
+# 📊 Análise de Mercado e Potenciais Pontos de Entrada
 
 Analise os dados de mercado fornecidos para identificar potenciais pontos de entrada. Concentre-se nas seguintes métricas e cenários:
 
-* **Indicadores de Tendência:**
-    * **Médias Móveis Exponenciais (EMAs):** EMA21 e EMA50. Observe cruzamentos e o posicionamento do preço em relação a elas.
-    * **Índice de Força Relativa (RSI):** Identifique condições de sobrecompra/sobrevenda e divergências.
-* **Níveis de Suporte e Resistência:**
-    * **Pontos de Pivô do Último Candle:** R1, R2, R3 (resistências) e S1, S2, S3 (suportes).
-* **Contexto Temporal:** Compare o cenário atual com padrões históricos semelhantes para confirmar a força do sinal.
-* **Observações:** Os dados fornecidos estão em ordem crescente de tempo. O último dado da lista é o mais recente. Utilize essa informação para observar padrões nos arrays.
-* **Observação:** O último candle é o mais recente. Identifique se é um sinal de hora ou a cada 4h, enfim.
-**Dados de Entrada mais recentes:**
-* **Símbolo:** ${inputData.symbol}
-* **Timeframe utilizado:** ${inputData.timeframe}
-* **CANDLES (inclui open, high, low, close e volume):** ${inputData.candles.slice(-15).join(', ')} 
-* **EMA21:** ${inputData.ema21.slice(-15).join(', ')}
-* **EMA50:** ${inputData.ema50.slice(-15).join(', ')}
-* **RSI:** ${inputData.rsi.slice(-15).join(', ')}
-* **ATR:** ${inputData.atr.slice(-15).join(', ')}
+## 📈 Indicadores de Tendência
+- **Médias Móveis Exponenciais (EMAs):** EMA21 e EMA50. Observe cruzamentos e o posicionamento do preço em relação a elas.
+- **Índice de Força Relativa (RSI):** Identifique condições de sobrecompra/sobrevenda e divergências.
 
-**Pivôs do Último Candle:**
+## 🎯 Níveis de Suporte e Resistência
+- **Pontos de Pivô do Último Candle:** R1, R2, R3 (resistências) e S1, S2, S3 (suportes).
 
-* **R1:** ${inputData.pivotHighs[0]?.r1 ?? 'N/A'}
-* **R2:** ${inputData.pivotHighs[0]?.r2 ?? 'N/A'}
-* **R3:** ${inputData.pivotHighs[0]?.r3 ?? 'N/A'}
-* **S1:** ${inputData.pivotLows[0]?.s1 ?? 'N/A'}
-* **S2:** ${inputData.pivotLows[0]?.s2 ?? 'N/A'}
-* **S3:** ${inputData.pivotLows[0]?.s3 ?? 'N/A'}
+## ⏰ Contexto Temporal
+Compare o cenário atual com padrões históricos semelhantes para confirmar a força do sinal.
+
+## 📝 Observações
+- Os dados fornecidos estão em ordem crescente de tempo. O último dado da lista é o mais recente.
+- Utilize essa informação para observar padrões nos arrays.
+- O último candle é o mais recente. Identifique se é um sinal de hora ou a cada 4h, enfim.
+
+## 📊 Dados de Entrada mais recentes
+- **Símbolo:** ${inputData.symbol}
+- **Timeframe utilizado:** ${inputData.timeframe}
+- **CANDLES (inclui open, high, low, close e volume):** ${inputData.candles.slice(-15).join(', ')} 
+- **EMA21:** ${inputData.ema21.slice(-15).join(', ')}
+- **EMA50:** ${inputData.ema50.slice(-15).join(', ')}
+- **RSI:** ${inputData.rsi.slice(-15).join(', ')}
+- **ATR:** ${inputData.atr.slice(-15).join(', ')}
+
+## 🎯 Pivôs do Último Candle
+- **R1:** ${inputData.pivotHighs[0]?.r1 ?? 'N/A'}
+- **R2:** ${inputData.pivotHighs[0]?.r2 ?? 'N/A'}
+- **R3:** ${inputData.pivotHighs[0]?.r3 ?? 'N/A'}
+- **S1:** ${inputData.pivotLows[0]?.s1 ?? 'N/A'}
+- **S2:** ${inputData.pivotLows[0]?.s2 ?? 'N/A'}
+- **S3:** ${inputData.pivotLows[0]?.s3 ?? 'N/A'}
 
 ---
-
-**Instruções para o Agente de IA:**
-
-Com base nos dados fornecidos e na sua especialização em mercado de perpetuals, siga estas etapas:
-
-1.  **Observações Iniciais:** Forneça um resumo conciso das condições atuais do mercado, destacando as tendências de preço (EMAs), a força do momentum (RSI) e os níveis de pivô relevantes.
-
-2.  **Identificação de Cenários de Negociação:**
-    * Identifique cenários de negociação potenciais (compra ou venda).
-    * Para cada cenário, **justifique** a recomendação com base na **confluência** dos indicadores (RSI, EMAs, Pivôs).
-    * **Priorize** cenários onde a confluência é mais forte e há precedentes históricos semelhantes.
-
-3.  **Recomendação de Negociação Detalhada:** Para cada cenário identificado, forneça uma recomendação de negociação clara, incluindo:
-    * **Direção:** Compra/Venda (Long/Short).
-    * **Entrada (EN):** Preço ou faixa de preço sugerido.
-    * **Stop Loss (SL):** Nível de preço para limitar perdas.
-    * **Take Profit (TP):** Nível de preço para realização de lucros (mínimo de 1 TP, idealmente 2 ou 3).
-    * **Força do Sinal:** Uma porcentagem (0-100%) indicando a confiança no sinal, baseada na confluência e no contexto temporal.
-
-4.  **Conclusão da Análise:**
-    * Se nenhum cenário de negociação claro (compra ou venda) for identificado com base na confluência dos indicadores e nos critérios estabelecidos, 
-    sua análise DEVE concluir explicitamente: "Não foram identificadas oportunidades de negociação claras no momento com base nos dados fornecidos."
-    * Caso contrário, sua análise deve focar nas recomendações detalhadas conforme o item 3, apresentando os sinais encontrados.
-
-    **Observações:**
-    Valide o ponto de entrada com as perguntas: 1. Liquidez foi buscada? 2. Quebra de estrutura confirmada? 3. Confluência?
-    Utilize emojis para indicar o início de cada raciocínio na mensagem.
-    Gere a mensagem em HTML para que seja renderizada corretamente no Telegram posteriormente.
-    Tente prever uma data/hora para o ponto de entrada com base nos dados históricos.
-
 `;
         const agentResponse = await workflowCryptoAgent.generate(analysisPrompt);
         const analysisText = typeof agentResponse === 'string' ? agentResponse : (agentResponse?.text || "No analysis provided by agent.");

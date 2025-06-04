@@ -2,6 +2,7 @@ import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
 import axios from "axios";
 import { environment } from "../../../crypto-ai-app/src/environments/environment";
+import telegramifyMarkdown from 'telegramify-markdown';
 
 async function sendTelegramMessage(message: string) {
     try {
@@ -9,38 +10,39 @@ async function sendTelegramMessage(message: string) {
         const chatId = environment.telegram.chatId;
         const maxLength = 4000;
 
-        // Limpa e formata a mensagem
-        const messageFormatted = message
-            .replace(/```html/g, '')
-            .replace(/```/g, '')
+        // Format the message for Telegram using telegramify-markdown
+        const messageFormatted = telegramifyMarkdown(message, 'escape')
+            // Remove HTML tags
             .replace(/<[^>]*>/g, '')
+            // Remove HTML entities
             .replace(/&[^;]+;/g, '')
+            // Add signature
             + '\n\n✅ Envio automático via Inteligência Artificial de trading';
 
-        // Valida o tamanho
+        // Validate length
         if (messageFormatted.length > maxLength * 10) {
             throw new Error('Mensagem muito longa para processamento');
         }
 
-        // Divide a mensagem em chunks com delay entre cada envio
+        // Split message into chunks with delay between sends
         const chunks = [];
         for (let i = 0; i < messageFormatted.length; i += maxLength) {
             chunks.push(messageFormatted.substring(i, i + maxLength));
         }
 
-        // Envia chunks com delay para evitar sobrecarga
+        // Send chunks with delay to avoid overload
         for (const chunk of chunks) {
             try {
                 await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
                     chat_id: chatId,
                     text: chunk,
-                    parse_mode: "HTML"
+                    parse_mode: "MarkdownV2"
                 });
-                // Aguarda 500ms entre cada envio
+                // Wait 500ms between each send
                 await new Promise(resolve => setTimeout(resolve, 500));
             } catch (error) {
                 console.error('Erro ao enviar parte da mensagem:', error);
-                // Continua enviando as próximas partes mesmo se uma falhar
+                // Continue sending next parts even if one fails
                 continue;
             }
         }
