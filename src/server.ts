@@ -4,6 +4,8 @@ import { mastra } from './mastra';
 import { z } from 'zod';
 import dotenv from 'dotenv';
 import { cryptoAgent } from './mastra/agents/crypto-agent';
+import { workflowCryptoAgent } from './mastra/agents/workflow-crypt-agent';
+import { sendTelegram } from './mastra/tools/notification-sender';
 import { Memory } from '@mastra/memory';
 
 // Load environment variables
@@ -22,7 +24,7 @@ if (missingEnvVars.length > 0) {
 // Schema de validação para a requisição
 const marketAnalysisSchema = z.object({
     symbol: z.string().min(1),
-    timeframe: z.string().min(1),
+    timeframe: z.string().min(1).optional(),
     limit: z.number().optional().default(100)
 });
 
@@ -33,7 +35,7 @@ const chatMessageSchema = z.object({
 
 interface MarketAnalysisRequest {
     symbol: string;
-    timeframe: string;
+    timeframe?: string;
     limit?: number;
 }
 
@@ -166,7 +168,7 @@ app.post('/api/market-analysis', async (req: Request<{}, {}, MarketAnalysisReque
         const result = await run.start({
             inputData: {
                 symbol,
-                timeframe,
+                timeframe: timeframe || '1h',
                 limit
             }
         });
@@ -180,6 +182,81 @@ app.post('/api/market-analysis', async (req: Request<{}, {}, MarketAnalysisReque
             });
         }
         console.error('Error executing workflow:', error);
+        res.status(500).json({
+            error: 'Internal server error',
+            message: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+
+// Nova rota para análise combinada de timeframes
+app.post('/api/combined-analysis', async (req: Request<{}, {}, MarketAnalysisRequest>, res: Response) => {
+    try {
+        // Validação dos dados de entrada
+        const validatedData = marketAnalysisSchema.parse(req.body);
+        const { symbol, limit } = validatedData;
+
+        const workflow = mastra.getWorkflow('getMarketAnalysisWorkflow');
+        if (!workflow) {
+            return res.status(404).json({ error: 'Workflow not found' });
+        }
+
+        // Executar análises em paralelo para diferentes timeframes
+        const [analysis1h, analysis4h] = await Promise.all([
+            workflow.createRun().start({
+                inputData: {
+                    symbol,
+                    timeframe: '1h',
+                    limit
+                }
+            }),
+            workflow.createRun().start({
+                inputData: {
+                    symbol,
+                    timeframe: '4h',
+                    limit
+                }
+            })
+        ]);
+
+        // Verificar se os workflows foram executados com sucesso
+        if (analysis1h.status !== 'success' || analysis4h.status !== 'success') {
+            throw new Error('One or both workflows failed to execute');
+        }
+
+        // Gerar análise combinada usando o agente
+        const analysisPrompt = `
+            # 📊 Análise Combinada de Mercado - Timeframes 1h e 4h
+
+            Analise os dados de mercado fornecidos para identificar potenciais pontos de entrada, considerando ambos os timeframes e mercado de long e short.
+
+            Ao final da análise, adicione o cenário "ideal" de trade, com valores reais julgados pela análise.
+
+
+            ## 📈 Dados do Timeframe 1h
+            ${JSON.stringify(analysis1h.result)}
+
+            ## 📈 Dados do Timeframe 4h
+            ${JSON.stringify(analysis4h.result)}
+
+            Envie essa análise via Telegram.
+`;
+
+        const response = await workflowCryptoAgent.generate(analysisPrompt);
+
+        res.json({
+            analysis1h: analysis1h.result,
+            analysis4h: analysis4h.result,
+            combinedAnalysis: response.text,
+        });
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({
+                error: 'Invalid request data',
+                details: error.errors
+            });
+        }
+        console.error('Error executing combined analysis:', error);
         res.status(500).json({
             error: 'Internal server error',
             message: error instanceof Error ? error.message : 'Unknown error'

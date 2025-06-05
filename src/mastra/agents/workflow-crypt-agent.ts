@@ -3,6 +3,7 @@ import { google } from "@ai-sdk/google";
 import { Memory } from "@mastra/memory";
 import { LibSQLStore, LibSQLVector } from "@mastra/libsql";
 import { fastembed } from "@mastra/fastembed";
+import { sendTelegram } from "../tools/notification-sender";
 
 const memory = new Memory({
     storage: new LibSQLStore({
@@ -23,7 +24,7 @@ const memory = new Memory({
 });
 
 export const workflowCryptoAgent = new Agent({
-    name: "Crypto Analyst",
+    name: "Workflow Crypto Analyst",
     instructions: `
     ### **Assunto: Ensinando uma Estratégia Avançada de Trading para Futuros Perpétuos**
 
@@ -115,7 +116,11 @@ export const workflowCryptoAgent = new Agent({
         1.  Ao atingir o alvo de **2R**, venda **50%** da posição.
         2.  Mova imediatamente o **Stop Loss** para o preço de entrada (ponto de breakeven).
         3.  Deixe os **50% restantes** da posição correrem, usando a 'EMA 21' no gráfico H1 como um **stop móvel (trailing stop)**. A posição é fechada manually quando um candle de H1 fechar abaixo (para longs) ou acima (para shorts) da 'EMA 21'.
-  `,
+  
+    * **Envio de mensagem para o telegram:**
+        Você tem a capacidade de enviar mensagens para o telegram utilizando a tool sendTelegram sempre que o usuário solicitar ativamente.
+        `,
     model: google("gemini-2.0-flash-thinking-exp-01-21"),
+    tools: { sendTelegram },
     memory: memory
 });

@@ -6,7 +6,6 @@ import { calculateRSI } from "../tools/calculate-rsi";
 import { calculateATR } from "../tools/calculate-atr";
 import { detectPivotsEnhanced } from "../tools/detect-pivot-points";
 import { z } from 'zod'
-import { workflowCryptoAgent } from "../agents/workflow-crypt-agent";
 import { sendTelegram } from "../tools/notification-sender";
 
 const fetchDataStep = createStep(fetchMarketData)
@@ -15,7 +14,6 @@ const calculateEMAStep50 = createStep(calculateEMA50)
 const calculateRSIStep = createStep(calculateRSI)
 const calculateATRStep = createStep(calculateATR)
 const detectPivotsEnhancedStep = createStep(detectPivotsEnhanced)
-const sendTelegramStep = createStep(sendTelegram)
 
 
 
@@ -51,9 +49,7 @@ const getOutputStep = createStep({
     }
 })
 
-const cryptoAgentAnalysisOutputSchema = z.object({
-    message: z.string(),
-})
+
 
 // Esquema para um objeto individual dentro de pivotHighs
 const pivotHighObjectSchema = z.object({
@@ -92,51 +88,13 @@ const cryptoAgentAnalysisInputSchema = z.object({
 const cryptoAgentAnalysisStep = createStep({
     id: "crypto-agent-analysis-step",
     inputSchema: cryptoAgentAnalysisInputSchema,
-    outputSchema: cryptoAgentAnalysisOutputSchema,
-    execute: async ({ inputData }): Promise<z.infer<typeof cryptoAgentAnalysisOutputSchema>> => {
-        const analysisPrompt = `
-# 📊 Análise de Mercado e Potenciais Pontos de Entrada
+    outputSchema: cryptoAgentAnalysisInputSchema,
+    execute: async ({ inputData }): Promise<z.infer<typeof cryptoAgentAnalysisInputSchema>> => {
 
-Analise os dados de mercado fornecidos para identificar potenciais pontos de entrada. Concentre-se nas seguintes métricas e cenários:
-
-## 📈 Indicadores de Tendência
-- **Médias Móveis Exponenciais (EMAs):** EMA21 e EMA50. Observe cruzamentos e o posicionamento do preço em relação a elas.
-- **Índice de Força Relativa (RSI):** Identifique condições de sobrecompra/sobrevenda e divergências.
-
-## 🎯 Níveis de Suporte e Resistência
-- **Pontos de Pivô do Último Candle:** R1, R2, R3 (resistências) e S1, S2, S3 (suportes).
-
-## ⏰ Contexto Temporal
-Compare o cenário atual com padrões históricos semelhantes para confirmar a força do sinal.
-
-## 📝 Observações
-- Os dados fornecidos estão em ordem crescente de tempo. O último dado da lista é o mais recente.
-- Utilize essa informação para observar padrões nos arrays.
-- O último candle é o mais recente. Identifique se é um sinal de hora ou a cada 4h, enfim.
-
-## 📊 Dados de Entrada mais recentes
-- **Símbolo:** ${inputData.symbol}
-- **Timeframe utilizado:** ${inputData.timeframe}
-- **CANDLES (inclui open, high, low, close e volume):** ${inputData.candles.slice(-15).join(', ')} 
-- **EMA21:** ${inputData.ema21.slice(-15).join(', ')}
-- **EMA50:** ${inputData.ema50.slice(-15).join(', ')}
-- **RSI:** ${inputData.rsi.slice(-15).join(', ')}
-- **ATR:** ${inputData.atr.slice(-15).join(', ')}
-
-## 🎯 Pivôs do Último Candle
-- **R1:** ${inputData.pivotHighs[0]?.r1 ?? 'N/A'}
-- **R2:** ${inputData.pivotHighs[0]?.r2 ?? 'N/A'}
-- **R3:** ${inputData.pivotHighs[0]?.r3 ?? 'N/A'}
-- **S1:** ${inputData.pivotLows[0]?.s1 ?? 'N/A'}
-- **S2:** ${inputData.pivotLows[0]?.s2 ?? 'N/A'}
-- **S3:** ${inputData.pivotLows[0]?.s3 ?? 'N/A'}
-
----
-`;
-        const agentResponse = await workflowCryptoAgent.generate(analysisPrompt);
-        const analysisText = typeof agentResponse === 'string' ? agentResponse : (agentResponse?.text || "No analysis provided by agent.");
-        const result: z.infer<typeof cryptoAgentAnalysisOutputSchema> = { message: analysisText }
-        return result;
+        return {
+            ...inputData,
+            candles: inputData.candles.slice(-10),
+        }
     }
 });
 
@@ -241,7 +199,7 @@ export const getMarketAnalysisWorkflow = createWorkflow({
 
     inputSchema: fetchDataStep.inputSchema,
 
-    outputSchema: cryptoAgentAnalysisOutputSchema,
+    outputSchema: cryptoAgentAnalysisInputSchema,
 
 })
 
@@ -412,23 +370,6 @@ getMarketAnalysisWorkflow.then(fetchDataStep)
             },
             cryptoAgentAnalysisStep
         ]
-    ]).map({
-        message: {
-            step: cryptoAgentAnalysisStep,
-            path: "message"
-        }
-    }).branch([
-        [
-            async ({ inputData }) => {
-                const messageText = inputData?.message
-                return {
-                    message: messageText
-                }
-            },
-            sendTelegramStep
-        ]
     ])
-
-
 
 getMarketAnalysisWorkflow.commit()
